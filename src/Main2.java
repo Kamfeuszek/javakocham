@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
@@ -6,7 +7,7 @@ import java.util.Scanner;
 public class Main2 {
     public static boolean dopisOsoby(Osoba o1) {
         try {
-            FileOutputStream fos = new FileOutputStream("C:\\Users\\9601323u\\Desktop\\osoby.dat", true);
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\florc\\Desktop\\osoby.dat", true);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(o1);
             oos.close();
@@ -16,7 +17,7 @@ public class Main2 {
         return true;
     }
     public static void wypiszOsoby() throws IOException, ClassNotFoundException {
-            FileInputStream fis = new FileInputStream("C:\\Users\\9601323u\\Desktop\\osoby.dat");
+            FileInputStream fis = new FileInputStream("C:\\Users\\florc\\Desktop\\osoby.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
             while (fis.available() > 0) {
                 Osoba o2 = (Osoba)ois.readObject();
@@ -26,7 +27,7 @@ public class Main2 {
     }
     public static void wypiszPoNazwisku(String nazwisko) throws IOException, ClassNotFoundException {
             String msg = "Nie znaleziono osoby";
-            FileInputStream fis = new FileInputStream("C:\\Users\\9601323u\\Desktop\\osoby.dat");
+            FileInputStream fis = new FileInputStream("C:\\Users\\florc\\Desktop\\osoby.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
             while (fis.available() > 0) {
                 Osoba o2 = (Osoba) ois.readObject();
@@ -38,18 +39,41 @@ public class Main2 {
             }
         System.out.println(msg);
     }
+    public static void usunOsobe(String imie, String nazwisko) throws IOException, ClassNotFoundException {
+        String msg = "Nie znaleziono osoby";
+        ArrayList<Osoba> osoby = new ArrayList<>();
+
+        FileInputStream fis = new FileInputStream("C:\\Users\\florc\\Desktop\\osoby.dat");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        while (fis.available() > 0) {
+            Osoba o3 = (Osoba) ois.readObject();
+            if (!Objects.equals(o3.getImie(), imie) && !Objects.equals(o3.getNazwisko(), nazwisko)) {
+                osoby.add(o3);
+                msg = "Usunięto osobę";
+            }
+            fis.skip(4);
+        }
+        FileOutputStream fos = new FileOutputStream("C:\\Users\\florc\\Desktop\\osoby.dat", true);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        for(int i = 0; i < osoby.size(); i++) {
+            oos.writeObject(osoby);
+        }
+        oos.close();
+        System.out.println(msg);
+    }
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         int wybor = -1;
         Scanner scan = new Scanner(System.in);
-        while (wybor != 4) {
+        while (wybor != 5) {
             System.out.println("\n\nMenu");
-            System.out.println("1. Dopisanie osoby");
+            System.out.println("1.Dopisanie osoby");
             System.out.println("2.Przeglądanie");
             System.out.println("3.Wyszukanie według nazwiska");
-            System.out.println("4.Koniec");
-            System.out.println("Wybierz opcje (1-4)");
+            System.out.println("4.Usuwanie osoby");
+            System.out.println("5.Koniec");
+            System.out.println("Wybierz opcje (1-5)");
             wybor = scan.nextInt();
-            String thrash = scan.nextLine();
+            scan.nextLine();
             switch (wybor) {
                 case 1:
                     try {
@@ -79,7 +103,14 @@ public class Main2 {
                     String nazwisko2 = scan.nextLine();
                     wypiszPoNazwisku(nazwisko2);
                             break;
-                case 4:  return;
+                case 4:
+                    System.out.println("Podaj imię");
+                    String imie3 = scan.nextLine();
+                    System.out.println("Podaj nazwisko");
+                    String nazwisko3 = scan.nextLine();
+                    usunOsobe(imie3, nazwisko3);
+                            break;
+                case 5:  return;
             }
         }
     }

@@ -36,4 +36,8 @@ public class Osoba implements Serializable {
     public String getNazwisko() {
         return nazwisko;
     }
+
+    public String getImie() {
+        return imie;
+    }
 }
